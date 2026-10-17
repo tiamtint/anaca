@@ -61,8 +61,9 @@ jobs:
       - name: Unit tests
         run: ./gradlew :app:testLiteDebugUnitTest --no-daemon --stacktrace
 
-      - name: Compile instrumented smoke tests
-        run: ./gradlew :app:assembleLiteDebug :app:assembleLiteDebugAndroidTest -PtestAbi=x86_64 --no-daemon --stacktrace
+      
+      - name: Assemble ARM64 APK
+        run: ./gradlew :app:assembleLiteDebug -PtestAbi=arm64-v8a --no-daemon --stacktrace
 
       - name: Upload lite debug APK
         uses: actions/upload-artifact@v4
@@ -71,6 +72,10 @@ jobs:
           path: app/build/outputs/apk/lite/debug/*.apk
           if-no-files-found: error
           retention-days: 7
+
+      - name: Compile instrumented smoke tests
+        run: ./gradlew :app:assembleLiteDebugAndroidTest -PtestAbi=x86_64 --no-daemon --stacktrace
+
 
       - name: Enable KVM
         run: |
